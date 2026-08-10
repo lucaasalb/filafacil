@@ -1,0 +1,10 @@
+build/
+build-test/
+out/
+*.class
+*.log
+fontes.txt
+.idea/
+.vscode/
+.DS_Store
+*.iml

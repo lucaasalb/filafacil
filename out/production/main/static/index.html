@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilaFacil - Gestao de Filas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>FilaFacil</h1>
+        <p>Sistema de gestao de filas de atendimento</p>
+    </header>
+
+    <main>
+        <!-- Painel com os numeros -->
+        <section class="painel">
+            <h2>Painel</h2>
+            <div class="cartoes">
+                <div class="cartao"><span id="total">0</span><small>Total</small></div>
+                <div class="cartao"><span id="aguardando">0</span><small>Aguardando</small></div>
+                <div class="cartao"><span id="chamadas">0</span><small>Chamadas</small></div>
+                <div class="cartao"><span id="finalizadas">0</span><small>Finalizadas</small></div>
+                <div class="cartao"><span id="canceladas">0</span><small>Canceladas</small></div>
+            </div>
+        </section>
+
+        <!-- Formulario de nova senha -->
+        <section class="formulario">
+            <h2>Nova senha</h2>
+            <input type="text" id="nomeCliente" placeholder="Nome do cliente">
+            <select id="tipoServico">
+                <option value="GERAL">Geral</option>
+                <option value="FINANCEIRO">Financeiro</option>
+                <option value="TECNICO">Tecnico</option>
+            </select>
+            <select id="prioridade">
+                <option value="NORMAL">Normal</option>
+                <option value="PRIORITARIA">Prioritaria</option>
+            </select>
+            <button onclick="criarSenha()">Gerar senha</button>
+        </section>
+
+        <!-- Chamar proxima senha -->
+        <section class="chamada">
+            <h2>Chamar proxima</h2>
+            <select id="politica">
+                <option value="FIFO">Ordem de chegada (FIFO)</option>
+                <option value="PRIORIDADE">Prioridade primeiro</option>
+            </select>
+            <select id="canal">
+                <option value="CONSOLE">Notificar por console</option>
+                <option value="EMAIL">Notificar por email</option>
+            </select>
+            <button onclick="chamarProxima()">Chamar proxima senha</button>
+        </section>
+
+        <!-- Lista de senhas -->
+        <section class="lista">
+            <h2>Senhas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Cliente</th>
+                        <th>Servico</th>
+                        <th>Prioridade</th>
+                        <th>Status</th>
+                        <th>Acoes</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
