@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilaFácil - Painel de Atendimento (Visão do Cliente)</title>
+    <link rel="stylesheet" href="cliente.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="icon">🏥</span>
+                <div>
+                    <h1>FilaFácil</h1>
+                    <span class="subtitle">Painel da Sala de Espera</span>
+                </div>
+            </div>
+            <div class="clock" id="relogio">00:00:00</div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Seção Principal: Senha Chamada Atual -->
+        <section class="destaque-chamada" id="cardDestaque">
+            <div class="destaque-header">
+                <span class="status-pulse"></span>
+                <span class="destaque-label">SENHA EM ATENDIMENTO</span>
+            </div>
+            
+            <div class="destaque-body" id="conteudoSenhaAtual">
+                <div class="sem-senha">
+                    <span class="icon-empty">⏳</span>
+                    <h2>Aguardando chamada...</h2>
+                    <p>Fique atento à tela para a sua vez.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seções Secundárias: Histórico e Fila -->
+        <div class="grid-secundario">
+            <!-- ÚLTIMAS CHAMADAS -->
+            <section class="card-painel">
+                <div class="card-header">
+                    <h2>Últimas Chamadas</h2>
+                    <span class="badge-count" id="countChamadas">0</span>
+                </div>
+                <div class="historico-lista" id="listaHistorico">
+                    <div class="lista-vazia">Nenhuma chamada recente.</div>
+                </div>
+            </section>
+
+            <!-- PRÓXIMOS DA FILA -->
+            <section class="card-painel">
+                <div class="card-header">
+                    <h2>Próximos da Fila</h2>
+                    <span class="badge-count" id="countAguardando">0</span>
+                </div>
+                <div class="fila-lista" id="listaAguardando">
+                    <div class="lista-vazia">Nenhum cliente aguardando.</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <span>FilaFácil &bull; Sistema de Gestão de Atendimento</span>
+        <button id="btnAudio" class="btn-audio" onclick="ativarAudio()">
+            🔊 Ativar Áudio de Chamada
+        </button>
+    </footer>
+
+    <script src="cliente.js"></script>
+</body>
+</html>
