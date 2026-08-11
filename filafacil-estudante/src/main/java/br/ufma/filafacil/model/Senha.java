@@ -54,6 +54,20 @@ public class Senha {
         finalizadaEm = LocalDateTime.now();
     }
 
+    // Reativa uma senha encerrada para que ela volte a fila.
+    // So e permitido reativar senhas finalizadas ou canceladas.
+    public void reativar() {
+        if (status != StatusSenha.FINALIZADA && status != StatusSenha.CANCELADA) {
+            throw new IllegalStateException(
+                    "So e possivel reativar senhas finalizadas ou canceladas."
+            );
+        }
+
+        status = StatusSenha.AGUARDANDO;
+        chamadaEm = null;
+        finalizadaEm = null;
+    }
+
     public int getNumero() {
         return numero;
     }
