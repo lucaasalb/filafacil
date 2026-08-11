@@ -11,19 +11,24 @@ import br.ufma.filafacil.service.SenhaService;
 import br.ufma.filafacil.web.ServidorWeb;
 
 
+import br.ufma.filafacil.patterns.observer.ObservadorMetricas;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
         // cria o repositorio em memoria
         SenhaRepository repositorio = new SenhaRepositorioMemoria();
 
-        // criar publicador e inscrever
+        // criar publicador e inscrever observadores
         PublicadorEventos publicador = new PublicadorEventos();
         publicador.inscrever(new ObservadorAuditoria());
         publicador.inscrever(new ObservadorPainel());
 
-        // cria o serviço
-        SenhaService servico = new SenhaService(repositorio, publicador);
+        ObservadorMetricas observadorMetricas = new ObservadorMetricas();
+        publicador.inscrever(observadorMetricas);
+
+        // cria o serviço com suporte a métricas
+        SenhaService servico = new SenhaService(repositorio, publicador, observadorMetricas);
 
         // Cria algumas senhas de exemplo para facilitar os testes na tela
         servico.criarSenha("Lucas Albuquerque", TipoServico.FINANCEIRO, Prioridade.NORMAL);
