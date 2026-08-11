@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilaFácil - Painel de Gestão & Métricas (Ana Luiza)</title>
+    <link rel="stylesheet" href="metricas.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="icon">📊</span>
+                <div>
+                    <h1>FilaFácil Analytics</h1>
+                    <span class="subtitle">Dashboard de Gestão & Métricas de Atendimento</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="btn-voltar">⬅️ Voltar ao Operador</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- KPIs Principais (Indicadores Chave de Desempenho) -->
+        <section class="kpi-grid">
+            <div class="kpi-card blue">
+                <div class="kpi-icon">⏱️</div>
+                <div class="kpi-data">
+                    <span class="kpi-value" id="tempoEspera">0s</span>
+                    <span class="kpi-title">Tempo Médio de Espera</span>
+                </div>
+            </div>
+
+            <div class="kpi-card green">
+                <div class="kpi-icon">👨‍⚕️</div>
+                <div class="kpi-data">
+                    <span class="kpi-value" id="tempoAtendimento">0s</span>
+                    <span class="kpi-title">Tempo Médio de Atendimento</span>
+                </div>
+            </div>
+
+            <div class="kpi-card purple">
+                <div class="kpi-icon">📋</div>
+                <div class="kpi-data">
+                    <span class="kpi-value" id="totalAtendidas">0</span>
+                    <span class="kpi-title">Senhas Finalizadas</span>
+                </div>
+            </div>
+
+            <div class="kpi-card red">
+                <div class="kpi-icon">❌</div>
+                <div class="kpi-data">
+                    <span class="kpi-value" id="taxaCancelamento">0%</span>
+                    <span class="kpi-title">Taxa de Cancelamento</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detalhamentos Avançados -->
+        <div class="grid-detalhes">
+            <!-- Comparativo por Prioridade -->
+            <section class="card-metrica">
+                <h2>Esperas por Prioridade</h2>
+                <div class="bars-container">
+                    <div class="bar-group">
+                        <div class="bar-info">
+                            <span>⭐ Prioritária</span>
+                            <strong id="esperaPrioritaria">0s</strong>
+                        </div>
+                        <div class="bar-bg">
+                            <div class="bar-fill red" id="barPrioritaria" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="bar-group">
+                        <div class="bar-info">
+                            <span>👤 Normal</span>
+                            <strong id="esperaNormal">0s</strong>
+                        </div>
+                        <div class="bar-bg">
+                            <div class="bar-fill blue" id="barNormal" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Atendimentos por Tipo de Serviço -->
+            <section class="card-metrica">
+                <h2>Atendimentos por Serviço</h2>
+                <div class="servicos-stats">
+                    <div class="servico-item">
+                        <span class="servico-nome">⚙️ Técnico</span>
+                        <span class="servico-count" id="countTecnico">0</span>
+                    </div>
+                    <div class="servico-item">
+                        <span class="servico-nome">💰 Financeiro</span>
+                        <span class="servico-count" id="countFinanceiro">0</span>
+                    </div>
+                    <div class="servico-item">
+                        <span class="servico-nome">🏢 Geral</span>
+                        <span class="servico-count" id="countGeral">0</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <span>FilaFácil &bull; Módulo de Inteligência de Atendimento (Observer Pattern)</span>
+    </footer>
+
+    <script src="metricas.js"></script>
+</body>
+</html>

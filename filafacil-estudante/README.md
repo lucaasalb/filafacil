@@ -29,8 +29,13 @@ O projeto usa **arquitetura em camadas**:
 ## Padrões de projeto
 
 - **Strategy**: escolha da próxima senha (`EstrategiaFifo` e `EstrategiaPrioridade`);
-- **Observer**: eventos das senhas (`ObservadorAuditoria` e `ObservadorPainel`);
+- **Observer**: eventos das senhas (`ObservadorAuditoria`, `ObservadorPainel` e `ObservadorMetricas`);
 - **Factory Method**: criação das notificações (`CriadorNotificacaoConsole` e `CriadorNotificacaoEmail`).
+
+## Novas telas desenvolvidas
+
+- **Visão do Cliente (TV):** `http://localhost:8080/cliente.html` (Exibe chamada em tempo real na sala de espera com nome do paciente, senha, prioridade e alerta sonoro/visual).
+- **Painel de Métricas:** `http://localhost:8080/metricas.html` (Dashboard com tempo médio de espera, tempo de atendimento e volume por tipo de serviço).
 
 ## Como executar
 
@@ -77,6 +82,7 @@ test.bat
 | POST | `/api/senhas/{numero}/finalizar` | finaliza uma senha |
 | POST | `/api/senhas/{numero}/cancelar` | cancela uma senha |
 | GET | `/api/painel` | mostra os totais do painel |
+| GET | `/api/metricas` | mostra as estatísticas e tempo médio de espera |
 
 Exemplo de criação de senha:
 

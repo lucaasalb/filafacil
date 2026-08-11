@@ -43,6 +43,9 @@ public class ApiHandler implements HttpHandler {
             } else if (caminho.equals("/api/painel") && metodo.equals("GET")) {
                 responder(troca, 200, JsonHelper.resumoParaJson(servico.gerarResumo()));
 
+            } else if (caminho.equals("/api/metricas") && metodo.equals("GET")) {
+                responder(troca, 200, JsonHelper.estatisticasParaJson(servico.gerarEstatisticas()));
+
             } else if (caminho.startsWith("/api/senhas/") && metodo.equals("POST")) {
                 acaoNaSenha(troca, caminho);
 

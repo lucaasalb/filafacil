@@ -43,8 +43,32 @@ O sistema foi estruturado seguindo uma **Arquitetura em Camadas (Layered Archite
 
 ### Padrões de Projeto Aplicados:
 1. **Strategy (`patterns/strategy`):** Alterna dinamicamente a regra de chamada de fila (FIFO vs. Prioridade Primeiro).
-2. **Observer (`patterns/observer`):** Notifica observadores (`ObservadorAuditoria` e `ObservadorPainel`) a cada mudança de estado da senha.
+2. **Observer (`patterns/observer`):** Notifica observadores a cada mudança de estado da senha:
+   - `ObservadorAuditoria`: Registra o histórico no console.
+   - `ObservadorPainel`: Emite alertas visuais no console.
+   - `ObservadorMetricas` *(Novo)*: Coleta estatísticas analíticas de tempo médio de espera, tempo de atendimento e totais por serviço.
 3. **Factory Method (`patterns/factory`):** Abstrai a criação de canais de notificação ao cliente (Console, E-mail, etc.).
+
+---
+
+## 📺 Novas Funcionalidades Desenvolvidas
+
+* 📺 **Visão do Cliente / TV da Sala de Espera (`cliente.html`):** Tela dedicada para exibição em monitores/TVs na sala de espera. Mostra a senha chamada em tamanho grande, nome completo do paciente, tipo de serviço, badge de prioridade com destaque visual e sinal sonoro (*chime*) a cada nova chamada.
+* 📊 **Dashboard de Gestão & Métricas (`metricas.html`):** Painel de inteligência operacional para gestores acompanharem o tempo médio de espera na fila, tempo médio de atendimento, comparativo por prioridade e volume por tipo de serviço.
+
+---
+
+## 🌐 Endpoints da API
+
+| Método | Caminho | Descrição |
+|--------|---------|-----------|
+| GET | `/api/senhas` | Lista todas as senhas registradas |
+| POST | `/api/senhas` | Cria uma nova senha |
+| POST | `/api/senhas/proxima` | Chama a próxima senha conforme a política |
+| POST | `/api/senhas/{numero}/finalizar` | Finaliza o atendimento de uma senha |
+| POST | `/api/senhas/{numero}/cancelar` | Cancela uma senha |
+| GET | `/api/painel` | Retorna o resumo dos totais por status |
+| GET | `/api/metricas` | *(Novo)* Retorna métricas analíticas e estatísticas de tempo de espera e atendimento |
 
 ---
 

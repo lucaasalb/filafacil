@@ -1,6 +1,7 @@
 package br.ufma.filafacil.web;
 
 import br.ufma.filafacil.model.Senha;
+import br.ufma.filafacil.service.EstatisticasAtendimento;
 import br.ufma.filafacil.service.ResumoPainel;
 
 import java.util.List;
@@ -49,6 +50,23 @@ public class JsonHelper {
                 + "\"chamadas\":" + resumo.getChamadas() + ","
                 + "\"finalizadas\":" + resumo.getFinalizadas() + ","
                 + "\"canceladas\":" + resumo.getCanceladas()
+                + "}";
+    }
+
+    // Converte estatísticas analíticas em JSON.
+    public static String estatisticasParaJson(EstatisticasAtendimento e) {
+        return "{"
+                + "\"totalCriadas\":" + e.getTotalCriadas() + ","
+                + "\"totalChamadas\":" + e.getTotalChamadas() + ","
+                + "\"totalFinalizadas\":" + e.getTotalFinalizadas() + ","
+                + "\"totalCanceladas\":" + e.getTotalCanceladas() + ","
+                + "\"tempoMedioEsperaSegundos\":" + String.format(java.util.Locale.US, "%.2f", e.getTempoMedioEsperaSegundos()) + ","
+                + "\"tempoMedioAtendimentoSegundos\":" + String.format(java.util.Locale.US, "%.2f", e.getTempoMedioAtendimentoSegundos()) + ","
+                + "\"tempoMedioEsperaNormalSegundos\":" + String.format(java.util.Locale.US, "%.2f", e.getTempoMedioEsperaNormalSegundos()) + ","
+                + "\"tempoMedioEsperaPrioritariaSegundos\":" + String.format(java.util.Locale.US, "%.2f", e.getTempoMedioEsperaPrioritariaSegundos()) + ","
+                + "\"atendidosGeral\":" + e.getAtendidosGeral() + ","
+                + "\"atendidosFinanceiro\":" + e.getAtendidosFinanceiro() + ","
+                + "\"atendidosTecnico\":" + e.getAtendidosTecnico()
                 + "}";
     }
 

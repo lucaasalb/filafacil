@@ -16,6 +16,8 @@ import br.ufma.filafacil.repository.SenhaRepository;
 
 import java.util.List;
 
+import br.ufma.filafacil.patterns.observer.ObservadorMetricas;
+
 // Camada de servico: onde ficam os casos de uso do sistema.
 // Ela usa o repositorio para guardar os dados e os tres padroes
 // (Strategy, Observer e Factory Method) para resolver o problema.
@@ -23,10 +25,16 @@ public class SenhaService {
 
     private SenhaRepository repositorio;
     private PublicadorEventos publicador;
+    private ObservadorMetricas observadorMetricas;
 
     public SenhaService(SenhaRepository repositorio, PublicadorEventos publicador) {
+        this(repositorio, publicador, null);
+    }
+
+    public SenhaService(SenhaRepository repositorio, PublicadorEventos publicador, ObservadorMetricas observadorMetricas) {
         this.repositorio = repositorio;
         this.publicador = publicador;
+        this.observadorMetricas = observadorMetricas;
     }
 
     // Cria uma nova senha e avisa os observadores.
@@ -99,6 +107,13 @@ public class SenhaService {
         }
 
         return new ResumoPainel(senhas.size(), aguardando, chamadas, finalizadas, canceladas);
+    }
+
+    public EstatisticasAtendimento gerarEstatisticas() {
+        if (observadorMetricas != null) {
+            return observadorMetricas.gerarEstatisticas();
+        }
+        return new EstatisticasAtendimento(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     // Escolhe qual estrategia (Strategy) usar conforme a politica.

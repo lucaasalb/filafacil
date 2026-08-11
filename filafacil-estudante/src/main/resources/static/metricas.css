@@ -1,0 +1,244 @@
+/* Estilos do Dashboard de Métricas & Gestão - FilaFácil */
+:root {
+    --bg-main: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    --accent-blue: #38bdf8;
+    --accent-green: #4ade80;
+    --accent-purple: #c084fc;
+    --accent-red: #f87171;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.app-header {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    padding: 1rem 2rem;
+}
+
+.header-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.logo .icon {
+    font-size: 2.2rem;
+}
+
+.logo h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #38bdf8, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.btn-voltar {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.2s;
+    border: 1px solid var(--card-border);
+}
+
+.btn-voltar:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Container Principal */
+.main-container {
+    max-width: 1300px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* KPI Cards */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.kpi-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+}
+
+.kpi-icon {
+    font-size: 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem;
+    border-radius: 14px;
+}
+
+.kpi-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.kpi-card.blue .kpi-value { color: var(--accent-blue); }
+.kpi-card.green .kpi-value { color: var(--accent-green); }
+.kpi-card.purple .kpi-value { color: var(--accent-purple); }
+.kpi-card.red .kpi-value { color: var(--accent-red); }
+
+.kpi-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Detalhes */
+.grid-detalhes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.card-metrica {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.75rem;
+}
+
+.card-metrica h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Bars */
+.bars-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.bar-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.bar-bg {
+    background: rgba(15, 23, 42, 0.6);
+    height: 12px;
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 50px;
+    transition: width 0.5s ease-in-out;
+}
+
+.bar-fill.red { background: linear-gradient(90deg, #ef4444, #f87171); }
+.bar-fill.blue { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+
+/* Servicos Stats */
+.servicos-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.servico-item {
+    background: rgba(15, 23, 42, 0.5);
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.servico-nome {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.servico-count {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent-blue);
+}
+
+/* Footer */
+.app-footer {
+    background: rgba(15, 23, 42, 0.9);
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--card-border);
+}
+
+@media (max-width: 800px) {
+    .grid-detalhes {
+        grid-template-columns: 1fr;
+    }
+}
