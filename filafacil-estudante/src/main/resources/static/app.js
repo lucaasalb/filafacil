@@ -25,11 +25,19 @@ function carregarSenhas() {
                 var linha = document.createElement("tr");
 
                 var acoes = "";
+
                 if (senha.status === "AGUARDANDO" || senha.status === "CHAMADA") {
+
                     if (senha.status === "CHAMADA") {
                         acoes += "<button class='btn-acao btn-finalizar' onclick='finalizar(" + senha.numero + ")'>Finalizar</button>";
                     }
+
                     acoes += "<button class='btn-acao btn-cancelar' onclick='cancelar(" + senha.numero + ")'>Cancelar</button>";
+
+                } else if (senha.status === "FINALIZADA" || senha.status === "CANCELADA") {
+
+                    acoes += "<button class='btn-acao btn-reativar' onclick='reativar(" + senha.numero + ")'>Reativar</button>";
+
                 }
 
                 linha.innerHTML =
@@ -122,6 +130,14 @@ function finalizar(numero) {
 // Cancela uma senha
 function cancelar(numero) {
     fetch("/api/senhas/" + numero + "/cancelar", { method: "POST" })
+        .then(function () {
+            atualizarTudo();
+        });
+}
+
+// Reativa uma senha finalizada ou cancelada
+function reativar(numero) {
+    fetch("/api/senhas/" + numero + "/reativar", { method: "POST" })
         .then(function () {
             atualizarTudo();
         });

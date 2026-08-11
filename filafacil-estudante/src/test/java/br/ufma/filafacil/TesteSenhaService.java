@@ -23,6 +23,7 @@ public class TesteSenhaService {
         testePrioridadeChamaPrioritaria();
         testeNaoFinalizaSenhaAguardando();
         testePainelConta();
+        testeReativarSenha();
 
         System.out.println();
         System.out.println("Resultado: " + passou + " passou, " + falhou + " falhou.");
@@ -97,6 +98,26 @@ public class TesteSenhaService {
                 resumo.getTotal() == 2
                         && resumo.getAguardando() == 1
                         && resumo.getChamadas() == 1);
+    }
+
+    // Verifica se uma senha finalizada pode ser reativada.
+    private static void testeReativarSenha() {
+        SenhaService servico = novoServico();
+
+        Senha senha = servico.criarSenha(
+                "Cliente",
+                TipoServico.GERAL,
+                Prioridade.NORMAL);
+
+        servico.chamarProxima(PoliticaFila.FIFO, "CONSOLE");
+        servico.finalizar(senha.getNumero());
+
+        servico.reativar(senha.getNumero());
+
+        verificar("Reativa senha finalizada",
+                senha.getStatus() == StatusSenha.AGUARDANDO
+                        && senha.getChamadaEm() == null
+                        && senha.getFinalizadaEm() == null);
     }
 
     // Metodo auxiliar que registra o resultado do teste.
