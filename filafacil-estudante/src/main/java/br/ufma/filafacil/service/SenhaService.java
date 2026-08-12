@@ -86,6 +86,16 @@ public class SenhaService {
         return senha;
     }
 
+    // Reativa uma senha finalizada ou cancelada,
+    // permitindo que ela volte para a fila de atendimento.
+    public Senha reativar(int numero) {
+        Senha senha = buscarOuFalhar(numero);
+        senha.reativar();
+        repositorio.salvar(senha);
+        publicador.notificar("REATIVADA", senha);
+        return senha;
+    }
+
     // Monta o resumo do painel contando as senhas em cada status.
     public ResumoPainel gerarResumo() {
         List<Senha> senhas = repositorio.listarTodas();

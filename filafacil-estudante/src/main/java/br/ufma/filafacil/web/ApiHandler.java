@@ -89,9 +89,13 @@ public class ApiHandler implements HttpHandler {
         responder(troca, 200, JsonHelper.senhaParaJson(senha));
     }
 
-    // Trata /api/senhas/{numero}/finalizar e /api/senhas/{numero}/cancelar
+    // Trata:
+    // /api/senhas/{numero}/finalizar
+    // /api/senhas/{numero}/cancelar
+    // /api/senhas/{numero}/reativar
     private void acaoNaSenha(HttpExchange troca, String caminho) throws IOException {
         String[] partes = caminho.split("/");
+
         // partes: ["", "api", "senhas", "{numero}", "{acao}"]
         if (partes.length != 5) {
             responder(troca, 404, JsonHelper.mensagem("Endpoint nao encontrado."));
@@ -102,10 +106,16 @@ public class ApiHandler implements HttpHandler {
         String acao = partes[4];
 
         Senha senha;
+
         if (acao.equals("finalizar")) {
             senha = servico.finalizar(numero);
+
         } else if (acao.equals("cancelar")) {
             senha = servico.cancelar(numero);
+
+        } else if (acao.equals("reativar")) {
+            senha = servico.reativar(numero);
+
         } else {
             responder(troca, 404, JsonHelper.mensagem("Acao desconhecida."));
             return;

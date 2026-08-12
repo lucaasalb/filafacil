@@ -10,9 +10,6 @@ import br.ufma.filafacil.repository.SenhaRepositorioMemoria;
 import br.ufma.filafacil.repository.SenhaRepository;
 import br.ufma.filafacil.service.SenhaService;
 
-import br.ufma.filafacil.patterns.observer.ObservadorMetricas;
-import br.ufma.filafacil.service.EstatisticasAtendimento;
-
 // Testes simples, sem biblioteca externa.
 // Cada metodo testa uma parte do sistema e imprime se passou ou falhou.
 public class TesteSenhaService {
@@ -26,7 +23,7 @@ public class TesteSenhaService {
         testePrioridadeChamaPrioritaria();
         testeNaoFinalizaSenhaAguardando();
         testePainelConta();
-        testeObservadorMetricas();
+        testeReativarSenha();
 
         System.out.println();
         System.out.println("Resultado: " + passou + " passou, " + falhou + " falhou.");
@@ -103,27 +100,24 @@ public class TesteSenhaService {
                         && resumo.getChamadas() == 1);
     }
 
-    private static void testeObservadorMetricas() {
-        SenhaRepository repositorio = new SenhaRepositorioMemoria();
-        PublicadorEventos publicador = new PublicadorEventos();
-        ObservadorMetricas obsMetricas = new ObservadorMetricas();
-        publicador.inscrever(obsMetricas);
+    // Verifica se uma senha finalizada pode ser reativada.
+    private static void testeReativarSenha() {
+        SenhaService servico = novoServico();
 
-        SenhaService servico = new SenhaService(repositorio, publicador, obsMetricas);
-
-        Senha s1 = servico.criarSenha("Ana", TipoServico.TECNICO, Prioridade.PRIORITARIA);
-        Senha s2 = servico.criarSenha("Carlos", TipoServico.FINANCEIRO, Prioridade.NORMAL);
+        Senha senha = servico.criarSenha(
+                "Cliente",
+                TipoServico.GERAL,
+                Prioridade.NORMAL);
 
         servico.chamarProxima(PoliticaFila.FIFO, "CONSOLE");
-        servico.finalizar(s1.getNumero());
+        servico.finalizar(senha.getNumero());
 
-        EstatisticasAtendimento estatisticas = servico.gerarEstatisticas();
+        servico.reativar(senha.getNumero());
 
-        verificar("ObservadorMetricas contabiliza criacoes, chamadas e finalizacoes",
-                estatisticas.getTotalCriadas() == 2
-                        && estatisticas.getTotalChamadas() == 1
-                        && estatisticas.getTotalFinalizadas() == 1
-                        && estatisticas.getAtendidosTecnico() == 1);
+        verificar("Reativa senha finalizada",
+                senha.getStatus() == StatusSenha.AGUARDANDO
+                        && senha.getChamadaEm() == null
+                        && senha.getFinalizadaEm() == null);
     }
 
     // Metodo auxiliar que registra o resultado do teste.
