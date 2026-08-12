@@ -2,117 +2,213 @@
 
 Bem-vindo ao repositório do **FilaFácil**, projeto final da disciplina de **Arquitetura de Software** (UFMA).
 
-O **FilaFácil** é um sistema completo para organização e gestão de filas de atendimento (bancos, clínicas, cartórios, etc.). O projeto permite a geração de senhas, chamadas baseadas em diferentes políticas (ordem de chegada ou prioridade), acompanhamento dos status das senhas e exibição em tempo real na **Visão do Cliente (Painel de TV da Sala de Espera)**.
+O **FilaFácil** é um sistema para organização e gestão de filas de atendimento (bancos, clínicas, hospitais, cartórios e órgãos públicos). O projeto permite gerar senhas, chamar atendimentos utilizando diferentes políticas de seleção, acompanhar o status das senhas em tempo real e disponibilizar painéis específicos para operadores, clientes e gestores.
 
-> ⚡ **Destaque de Engenharia:** Desenvolvido em **Java 21 sem nenhuma biblioteca ou framework externo**. Toda a arquitetura web (servidor HTTP, rotas REST e renderização estática), persistência e testes automatizados foram construídos utilizando recursos nativos da linguagem Java para manter as decisões de arquitetura e padrões de projeto 100% visíveis e desacoplados.
+> ⚡ **Destaque:** Desenvolvido em **Java 21**, sem frameworks externos. O servidor HTTP, API REST, persistência, interface web e testes automatizados foram implementados utilizando apenas recursos nativos da linguagem, permitindo evidenciar claramente as decisões arquiteturais e os padrões de projeto adotados.
 
 ---
 
-## 📁 Estrutura do Repositório
-
-O projeto principal está organizado dentro da pasta [`filafacil-estudante/`](filafacil-estudante):
+# 📁 Estrutura do Repositório
 
 ```text
 filafacil/
-├── filafacil-estudante/        # Diretório do projeto da aplicação
-│   ├── docs/                   # Documentação arquitetural e de defesa
-│   │   ├── adr/                # Registros de Decisões de Arquitetura (ADRs)
-│   │   ├── architecture/       # Diagramas C4 (Contexto e Container)
-│   │   └── defesa.md           # Documento completo de defesa do trabalho
-│   ├── src/                    # Código-fonte (Java 21 e Frontend HTML/CSS/JS)
-│   │   ├── main/java/          # Camadas (model, service, repository, patterns, web)
-│   │   ├── main/resources/     # Interface gráfica da aplicação web
-│   │   └── test/java/          # Suíte de testes automatizados sem frameworks
-│   ├── run.bat                 # Script de execução (Windows)
-│   ├── run.sh                  # Script de execução (Linux/macOS)
-│   ├── test.bat                # Script de testes (Windows)
-│   └── test.sh                 # Script de testes (Linux/macOS)
-└── README.md                   # Este arquivo (Visão Geral do Repositório)
+├── filafacil-estudante/
+│   ├── docs/
+│   │   ├── adr/
+│   │   ├── architecture/
+│   │   ├── images/
+│   │   ├── defesa.md
+│   │   └── defesa.pdf
+│   │
+│   ├── src/
+│   │   ├── main/java/
+│   │   ├── main/resources/
+│   │   └── test/java/
+│   │
+│   ├── run.bat
+│   ├── run.sh
+│   ├── test.bat
+│   ├── test.sh
+│   └── README.md
+│
+└── README.md
 ```
 
 ---
 
-## 🏛️ Arquitetura e Padrões de Projeto
+# 🏛️ Arquitetura
 
-O sistema foi estruturado seguindo uma **Arquitetura em Camadas (Layered Architecture)** com **baixo acoplamento** e **alta coesão**:
+O sistema segue uma **Arquitetura em Camadas (Layered Architecture)** composta por:
 
-* **Camada Web (`web`):** Servidor HTTP nativo e tradução de requisições JSON.
-* **Camada Service (`service`):** Casos de uso e orquestração das regras de negócio.
-* **Camada Domain (`model`):** Entidades e regras de domínio (`Senha`, `Prioridade`, etc.).
-* **Camada Repository (`repository`):** Abstração de armazenamento (memória).
+- **Web:** Servidor HTTP e API REST.
+- **Service:** Regras de negócio.
+- **Model:** Entidades do domínio.
+- **Repository:** Persistência em memória.
 
-### Padrões de Projeto Aplicados:
-1. **Strategy (`patterns/strategy`):** Alterna dinamicamente a regra de chamada de fila (FIFO vs. Prioridade Primeiro).
-2. **Observer (`patterns/observer`):** Notifica observadores a cada mudança de estado da senha:
-   - `ObservadorAuditoria`: Registra o histórico no console.
-   - `ObservadorPainel`: Emite alertas visuais no console.
-   - `ObservadorMetricas` *(Novo)*: Coleta estatísticas analíticas de tempo médio de espera, tempo de atendimento e totais por serviço.
-3. **Factory Method (`patterns/factory`):** Abstrai a criação de canais de notificação ao cliente (Console, E-mail, etc.).
+Essa divisão reduz o acoplamento entre componentes e facilita a evolução do sistema.
 
 ---
 
-## 📺 Novas Funcionalidades Desenvolvidas
+# 🎯 Padrões de Projeto
 
-* 📺 **Visão do Cliente / TV da Sala de Espera (`cliente.html`):** Tela dedicada para exibição em monitores/TVs na sala de espera. Mostra a senha chamada em tamanho grande, nome completo do paciente, tipo de serviço, badge de prioridade com destaque visual e sinal sonoro (*chime*) a cada nova chamada.
-* 📊 **Dashboard de Gestão & Métricas (`metricas.html`):** Painel de inteligência operacional para gestores acompanharem o tempo médio de espera na fila, tempo médio de atendimento, comparativo por prioridade e volume por tipo de serviço.
+O projeto utiliza os seguintes padrões:
 
----
+## Strategy
 
-## 🌐 Endpoints da API
+Permite alterar dinamicamente a política de chamada das senhas.
 
-| Método | Caminho | Descrição |
-|--------|---------|-----------|
-| GET | `/api/senhas` | Lista todas as senhas registradas |
-| POST | `/api/senhas` | Cria uma nova senha |
-| POST | `/api/senhas/proxima` | Chama a próxima senha conforme a política |
-| POST | `/api/senhas/{numero}/finalizar` | Finaliza o atendimento de uma senha |
-| POST | `/api/senhas/{numero}/cancelar` | Cancela uma senha |
-| GET | `/api/painel` | Retorna o resumo dos totais por status |
-| GET | `/api/metricas` | *(Novo)* Retorna métricas analíticas e estatísticas de tempo de espera e atendimento |
+- FIFO (ordem de chegada)
+- Prioridade
 
 ---
 
-## 📚 Documentações do Projeto
+## Observer
 
-Para consultar os detalhes arquiteturais, diagramas e justificativas das decisões de projeto, acesse os documentos abaixo:
+Notifica automaticamente os interessados quando ocorre alguma alteração em uma senha.
 
-* 📄 **[Documento Completo de Defesa](filafacil-estudante/docs/defesa.md):** Apresentação detalhada da arquitetura, funcionalidades, telas e decisões.
-* 📐 **[Diagrama C4 - Nível 1 (Contexto)](filafacil-estudante/docs/architecture/c4-contexto.md):** Visão geral de contexto do sistema e seus atores.
-* 📦 **[Diagrama C4 - Nível 2 (Container)](filafacil-estudante/docs/architecture/c4-container.md):** Visão dos containers e comunicação HTTP.
-* 📜 **[ADR 001 - Arquitetura em Camadas](filafacil-estudante/docs/adr/001-arquitetura-em-camadas.md)**
-* 📜 **[ADR 002 - Persistência em Memória](filafacil-estudante/docs/adr/002-persistencia-em-memoria.md)**
-* 📜 **[ADR 003 - Padrões de Projeto (GoF)](filafacil-estudante/docs/adr/003-padroes-de-projeto.md)**
+Observadores implementados:
+
+- Auditoria
+- Painel
+- Métricas
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Factory Method
 
-### Pré-requisito
-* **Java 21 (JDK 21)** ou superior instalado.
+Responsável pela criação dos canais de notificação utilizados pelo sistema.
 
-### Executando no Windows
-Abra o terminal na pasta [`filafacil-estudante/`](filafacil-estudante) e execute:
-```cmd
-run.bat
+---
+
+# ✨ Funcionalidades
+
+O sistema atualmente possui as seguintes funcionalidades:
+
+## 🎛️ Painel do Operador
+
+Tela principal utilizada pelos atendentes.
+
+Permite:
+
+- gerar senhas;
+- chamar próxima senha;
+- finalizar atendimento;
+- cancelar atendimento;
+- reativar senhas canceladas;
+- acompanhar o resumo geral da fila.
+
+---
+
+## 📺 Visão do Cliente
+
+Painel destinado às TVs da sala de espera.
+
+Exibe:
+
+- senha em atendimento;
+- próximas senhas da fila;
+- últimas chamadas;
+- alerta sonoro automático;
+- atualização em tempo real.
+
+---
+
+## 📊 Painel de Métricas
+
+Painel destinado aos gestores.
+
+Exibe indicadores como:
+
+- tempo médio de espera;
+- tempo médio de atendimento;
+- atendimentos por serviço;
+- esperas por prioridade;
+- taxa de cancelamento.
+
+---
+
+## 🔄 Reativação de Senhas
+
+Permite reativar senhas previamente canceladas.
+
+Quando uma senha é reativada:
+
+- retorna ao estado **AGUARDANDO**;
+- volta a participar normalmente da fila;
+- permanece com seus dados originais (cliente, serviço e prioridade).
+
+---
+
+# 🌐 API REST
+
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| GET | /api/senhas | Lista todas as senhas |
+| POST | /api/senhas | Cria nova senha |
+| POST | /api/senhas/proxima | Chama próxima senha |
+| POST | /api/senhas/{numero}/finalizar | Finaliza atendimento |
+| POST | /api/senhas/{numero}/cancelar | Cancela senha |
+| POST | /api/senhas/{numero}/reativar | Reativa senha cancelada |
+| GET | /api/painel | Retorna resumo da fila |
+| GET | /api/metricas | Retorna estatísticas do sistema |
+
+---
+
+# 📚 Documentação
+
+A documentação arquitetural encontra-se em:
+
+- **docs/defesa.md**
+- **docs/defesa.pdf**
+
+Diagramas:
+
+- C4 Contexto
+- C4 Container
+
+ADRs:
+
+- ADR 001 – Arquitetura em Camadas
+- ADR 002 – Persistência em Memória
+- ADR 003 – Padrões de Projeto
+
+---
+
+# 🚀 Execução
+
+## Windows
+
+```powershell
+.\run.bat
 ```
-*(Se estiver usando PowerShell, execute `.\run.bat`)*
 
-### Executando no Linux ou macOS
+## Linux/macOS
+
 ```bash
-cd filafacil-estudante
-chmod +x run.sh test.sh
+chmod +x run.sh
 ./run.sh
 ```
 
-Após iniciar, acesse no seu navegador:
-* 🎛️ **Painel do Operador:** [http://localhost:8080](http://localhost:8080)
-* 📺 **Visão do Cliente (TV da Sala de Espera):** [http://localhost:8080/cliente.html](http://localhost:8080/cliente.html)
+Após iniciar o servidor:
+
+| Tela | Endereço |
+|------|----------|
+| Painel do Operador | http://localhost:8080 |
+| Visão do Cliente | http://localhost:8080/cliente.html |
+| Painel de Métricas | http://localhost:8080/metricas.html |
 
 ---
 
-## 🧪 Rodando os Testes Automatizados
+# 🧪 Testes
 
-Para executar os testes sem bibliotecas externas:
+Windows
 
-* **Windows:** `.\test.bat` (dentro da pasta `filafacil-estudante/`)
-* **Linux/macOS:** `./test.sh` (dentro da pasta `filafacil-estudante/`)
+```powershell
+.\test.bat
+```
+
+Linux/macOS
+
+```bash
+./test.sh
+```
