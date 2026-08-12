@@ -1,29 +1,36 @@
 # C4 - Nivel 1: Contexto
 
-Este diagrama mostra o FilaFacil como uma unica caixa e quem interage com ele.
+Este diagrama mostra o FilaFacil como uma unica caixa e os principais atores que interagem com o sistema.
 
 ```mermaid
 flowchart TD
     atendente["Atendente
-    Gera e chama senhas"]
+    Opera o sistema"]
+
     gestor["Gestor
-    Acompanha o painel"]
+    Consulta metricas"]
+
     cliente["Cliente
-    Recebe e ve sua senha"]
+    Acompanha a fila"]
 
     sistema["FilaFacil
     Sistema de gestao de filas"]
 
-    atendente -->|Gera, chama, finaliza e cancela senhas| sistema
-    gestor -->|Consulta o painel| sistema
-    sistema -->|Mostra o numero e o estado da senha| cliente
+    atendente -->|Cria, chama, finaliza, cancela e reativa senhas| sistema
+    gestor -->|Consulta indicadores e metricas| sistema
+    cliente -->|Visualiza o painel da sala de espera| sistema
 ```
 
 ## Explicacao
 
-O FilaFacil cuida de todo o ciclo de uma senha: da criacao ate a finalizacao ou
-o cancelamento. O atendente opera o sistema, o gestor acompanha os numeros e o
-cliente ve a sua senha ser chamada.
+O FilaFacil gerencia todo o ciclo de vida de uma senha, desde a sua criacao ate
+a finalizacao, cancelamento ou reativacao.
+
+O atendente utiliza o Painel do Operador para realizar as operacoes de atendimento.
+O gestor acompanha o desempenho do sistema por meio do Painel de Metricas,
+consultando indicadores como tempo medio de espera, tempo medio de atendimento,
+taxa de cancelamento e distribuicao por servico. O cliente acompanha sua senha
+em tempo real utilizando a Visao do Cliente exibida na sala de espera.
 
 ## Fora do escopo
 

@@ -17,9 +17,13 @@ O sistema foi desenvolvido em **Java 21, sem nenhuma biblioteca externa**. Essa 
 - gerar senhas informando nome, tipo de serviço e prioridade;
 - listar as senhas e seus estados;
 - chamar a próxima senha por FIFO (ordem de chegada) ou por prioridade;
-- finalizar e cancelar senhas;
-- exibir um painel com o total de senhas em cada situação;
-- registrar os eventos no console (auditoria e painel);
+- finalizar senhas em atendimento;
+- cancelar senhas;
+- reativar senhas canceladas, retornando-as para a fila de atendimento;
+- exibir um painel com o resumo das senhas por status;
+- disponibilizar uma Visão do Cliente (Painel da Sala de Espera) com atualização em tempo real;
+- disponibilizar um Dashboard de Métricas para acompanhamento operacional;
+- registrar eventos no console (auditoria e painel);
 - notificar a chamada por console ou por e-mail (simulado).
 
 ---
@@ -46,6 +50,13 @@ web  →  service  →  model
 
 A camada `model` não depende de nenhuma outra, o que a torna a parte mais estável do sistema.
 
+Além do Painel do Operador, a camada Web passou a disponibilizar outras duas interfaces:
+
+- **Visão do Cliente**, destinada à exibição das senhas chamadas em monitores ou televisores na sala de espera;
+- **Dashboard de Métricas**, destinado ao acompanhamento operacional da fila por gestores, apresentando indicadores e estatísticas em tempo real.
+
+Essas interfaces reutilizam a mesma API HTTP e as mesmas regras de negócio da aplicação, mantendo a arquitetura em camadas e evitando duplicação de código.
+
 ### 2.1 Diagramas C4
 
 Os diagramas C4 de Nível 1 (Contexto) e Nível 2 (Container) estão em:
@@ -65,35 +76,99 @@ As três principais decisões de arquitetura estão documentadas em `docs/adr/`:
 
 ## 3. O sistema em funcionamento
 
-As telas abaixo foram capturadas com o sistema rodando localmente.
+As telas abaixo foram capturadas com o sistema em execução localmente, demonstrando as principais funcionalidades implementadas.
 
-### 3.1 Tela inicial
+### 3.1 Painel do Operador
 
-Ao abrir `http://localhost:8080`, o sistema já começa com três senhas de exemplo. O painel mostra os totais e a tabela lista as senhas aguardando.
+Ao acessar `http://localhost:8080`, o operador visualiza o painel principal do sistema.
 
-![Tela inicial do sistema](images/01-tela-inicial.png)
+Nele são apresentados os indicadores gerais da fila (total de senhas, aguardando, chamadas, finalizadas e canceladas), além das áreas para geração de novas senhas, chamada da próxima senha e gerenciamento da fila.
 
-### 3.2 Gerando uma nova senha
+![Painel do Operador](images/01-painel-operador.png)
 
-Preenchemos o nome do cliente, escolhemos o tipo de serviço e a prioridade, e clicamos em **Gerar senha**. No exemplo abaixo, foi criada a senha 4 (Mariana Costa, serviço Técnico, prioritária).
+---
 
-![Senha criada pela interface](images/02-senha-criada.png)
+### 3.2 Geração de uma nova senha
 
-### 3.3 Chamando a próxima senha por prioridade
+Para cadastrar um atendimento, o operador informa o nome do cliente, seleciona o tipo de serviço e define se a senha será normal ou prioritária.
 
-Selecionamos a política **Prioridade primeiro** e o canal **Notificar por e-mail**, e clicamos em **Chamar próxima senha**.
+Após clicar em **Gerar Senha**, a nova senha passa a fazer parte da fila de atendimento.
 
-Observe o resultado: mesmo havendo senhas mais antigas aguardando (a senha 1, normal), o sistema chamou a **senha 2 (Carlos Souza, prioritária)**, porque ela é a senha prioritária mais antiga. O painel foi atualizado para 1 chamada e 3 aguardando, e a senha 2 passou a exibir o botão **Finalizar**.
+![Geração de Senha](images/02-geracao-senha.png)
 
-![Senha prioritária chamada](images/03-senha-chamada.png)
+---
 
-Isso demonstra o padrão **Strategy** funcionando na prática: a política de escolha muda o comportamento do sistema sem alterar o restante do código.
+### 3.3 Gerenciamento da fila
 
-### 3.4 Saída no console (Observer e Factory Method)
+A tabela de senhas apresenta todas as senhas cadastradas e seus respectivos estados.
 
-Enquanto o sistema roda, o console mostra as mensagens geradas pelos observadores e pela notificação. Este foi o log correspondente às ações acima:
+Por meio dela, o operador pode acompanhar a fila e executar ações como cancelamento, finalização e reativação das senhas, de acordo com o estado atual de cada atendimento.
 
-```
+![Tabela de Senhas](images/03-tabela-senha.png)
+
+---
+
+### 3.4 Reativação de senhas
+
+Uma das funcionalidades adicionadas ao projeto foi a possibilidade de reativar senhas canceladas.
+
+Quando uma senha é cancelada, ela permanece registrada no sistema. Caso o cliente retorne ou o cancelamento tenha ocorrido por engano, basta clicar em **Reativar** para que a senha volte automaticamente ao estado **AGUARDANDO**, retornando à fila sem necessidade de gerar uma nova senha.
+
+Antes da reativação:
+
+![Senha Cancelada](images/04-reativacao-senha.png)
+
+Após a reativação:
+
+![Senha Reativada](images/05-senha-reativada.png)
+
+Essa funcionalidade preserva o histórico do atendimento e evita a criação de senhas duplicadas.
+
+---
+
+### 3.5 Visão do Cliente
+
+Além do painel do operador, foi desenvolvida uma interface exclusiva para a sala de espera.
+
+Essa tela exibe em tempo real:
+
+- senha atualmente em atendimento;
+- últimas senhas chamadas;
+- próximas senhas da fila;
+- relógio em tempo real;
+- atualização automática sem necessidade de recarregar a página.
+
+Sempre que uma nova senha é chamada, o painel é atualizado automaticamente e um alerta sonoro é emitido para chamar a atenção dos clientes.
+
+![Visão do Cliente](images/06-visao-cliente.png)
+
+---
+
+### 3.6 Dashboard de Métricas
+
+Também foi implementado um Dashboard de Métricas destinado ao acompanhamento gerencial da operação.
+
+O painel apresenta indicadores como:
+
+- tempo médio de espera;
+- tempo médio de atendimento;
+- quantidade de atendimentos por tipo de serviço;
+- distribuição entre senhas normais e prioritárias;
+- indicadores consolidados do funcionamento da fila.
+
+As informações são atualizadas periodicamente por meio da API da aplicação, permitindo o acompanhamento da operação em tempo real.
+
+![Dashboard de Métricas](images/07-dashboard-metricas.png)
+
+---
+
+### 3.7 Saída no console (Observer e Factory Method)
+
+Enquanto o sistema está em execução, o console registra automaticamente os eventos produzidos pela aplicação.
+
+Abaixo está um exemplo de saída:
+
+```text
 [AUDITORIA] Evento: CRIADA | Senha: 1 | Status: AGUARDANDO
 [AUDITORIA] Evento: CRIADA | Senha: 2 | Status: AGUARDANDO
 [AUDITORIA] Evento: CRIADA | Senha: 3 | Status: AGUARDANDO
@@ -104,31 +179,33 @@ FilaFacil iniciado em http://localhost:8080
 [EMAIL] Para: Carlos Souza | Assunto: Sua senha foi chamada | Senha 2 chamada para atendimento.
 ```
 
-Nesse trecho aparecem os dois observadores (`[AUDITORIA]` e `[PAINEL]`) reagindo aos eventos, e a notificação por e-mail (`[EMAIL]`) criada pelo Factory Method.
+Nesse trecho é possível observar o funcionamento do padrão **Observer**, responsável por notificar automaticamente os observadores de auditoria, painel e métricas sempre que ocorre uma mudança de estado em uma senha.
+
+Também é possível identificar a atuação do padrão **Factory Method**, utilizado para instanciar dinamicamente o canal de notificação escolhido (console ou e-mail), desacoplando a criação da notificação de sua utilização pela aplicação.
 
 ---
 
 ## 4. Padrões de projeto aplicados
 
-Implementamos três padrões, cada um resolvendo uma necessidade real do sistema.
+Implementamos três padrões de projeto (GoF), cada um resolvendo uma necessidade real do sistema.
+
+---
 
 ### 4.1 Strategy — escolha da próxima senha
 
-**Problema:** o sistema precisa chamar a próxima senha de formas diferentes: por ordem de chegada (FIFO) ou dando preferência às senhas prioritárias.
+**Problema:** o sistema precisa chamar a próxima senha utilizando políticas diferentes, podendo atender por ordem de chegada (FIFO) ou priorizando senhas preferenciais.
 
-**Solução:** criamos a interface `EstrategiaFila`, com duas implementações (`EstrategiaFifo` e `EstrategiaPrioridade`). O serviço apenas escolhe qual estratégia usar; ele não conhece os detalhes de cada uma.
+**Solução:** foi criada a interface `EstrategiaFila`, com implementações independentes (`EstrategiaFifo` e `EstrategiaPrioridade`). O serviço apenas seleciona qual estratégia utilizar, sem conhecer os detalhes de cada algoritmo.
 
 Interface comum (`patterns/strategy/EstrategiaFila.java`):
 
 ```java
 public interface EstrategiaFila {
-    // Recebe a lista de senhas e devolve a proxima a ser chamada.
-    // Retorna null se nao houver nenhuma senha aguardando.
     Senha escolherProxima(List<Senha> senhas);
 }
 ```
 
-Implementação da prioridade (`patterns/strategy/EstrategiaPrioridade.java`):
+Implementação da política por prioridade (`patterns/strategy/EstrategiaPrioridade.java`):
 
 ```java
 public class EstrategiaPrioridade implements EstrategiaFila {
@@ -142,6 +219,7 @@ public class EstrategiaPrioridade implements EstrategiaFila {
             if (senha.getStatus() != StatusSenha.AGUARDANDO) {
                 continue;
             }
+
             if (senha.getPrioridade() == Prioridade.PRIORITARIA) {
                 if (prioritaria == null || senha.getNumero() < prioritaria.getNumero()) {
                     prioritaria = senha;
@@ -153,16 +231,12 @@ public class EstrategiaPrioridade implements EstrategiaFila {
             }
         }
 
-        // Se existe prioritaria, ela vem primeiro. Senao, retorna a normal mais antiga.
-        if (prioritaria != null) {
-            return prioritaria;
-        }
-        return normal;
+        return prioritaria != null ? prioritaria : normal;
     }
 }
 ```
 
-No serviço, a estratégia é escolhida assim (`service/SenhaService.java`):
+Escolha da estratégia (`SenhaService.java`):
 
 ```java
 private EstrategiaFila escolherEstrategia(PoliticaFila politica) {
@@ -173,13 +247,15 @@ private EstrategiaFila escolherEstrategia(PoliticaFila politica) {
 }
 ```
 
-**Trade-off assumido:** poderíamos ter usado apenas um `if` gigante dentro do serviço para decidir a próxima senha. Preferimos o Strategy porque ele deixa o código mais organizado e permite adicionar novas políticas (por exemplo, "por tipo de serviço") criando apenas uma nova classe, sem mexer no serviço. O custo é ter mais classes no projeto.
+**Trade-off:** seria possível implementar toda essa lógica utilizando apenas estruturas condicionais (`if/else`) dentro do serviço. Entretanto, o padrão Strategy torna o código mais organizado e permite adicionar novas políticas sem alterar o restante da aplicação. O custo é um número maior de classes.
+
+---
 
 ### 4.2 Observer — reação aos eventos das senhas
 
-**Problema:** quando uma senha muda de estado, várias partes do sistema precisam reagir: a auditoria precisa registrar, e o painel precisa avisar o cliente. Não queríamos que o serviço conhecesse cada uma dessas partes.
+**Problema:** sempre que uma senha muda de estado, diferentes partes do sistema precisam reagir de maneira independente. Além da auditoria e do painel de atendimento, o sistema também passou a coletar métricas operacionais.
 
-**Solução:** usamos o padrão Observer. A classe `PublicadorEventos` guarda a lista de observadores e avisa todos quando algo acontece. Cada observador (`ObservadorAuditoria`, `ObservadorPainel`) decide como reagir.
+**Solução:** foi utilizado o padrão **Observer**. O `PublicadorEventos` mantém uma lista de observadores cadastrados e notifica todos eles quando ocorre um evento na aplicação.
 
 Publicador (`patterns/observer/PublicadorEventos.java`):
 
@@ -200,7 +276,7 @@ public class PublicadorEventos {
 }
 ```
 
-No serviço, basta notificar sem saber quem vai reagir (`service/SenhaService.java`):
+No serviço basta publicar o evento:
 
 ```java
 senha.chamar();
@@ -208,20 +284,27 @@ repositorio.salvar(senha);
 publicador.notificar("CHAMADA", senha);
 ```
 
-**Trade-off assumido:** sem o Observer, o serviço teria que chamar diretamente cada observador, ficando acoplado a eles. Com o Observer, dá para adicionar um novo observador (por exemplo, um que salva estatísticas) inscrevendo-o no `Main`, sem tocar no serviço. O custo é que o fluxo fica um pouco menos "direto" de ler, pois quem reage não está escrito no serviço.
+Atualmente existem três observadores registrados:
+
+- **ObservadorAuditoria:** registra os eventos no console;
+- **ObservadorPainel:** produz mensagens destinadas ao painel de atendimento;
+- **ObservadorMetricas:** coleta estatísticas de tempo médio de espera, tempo médio de atendimento e indicadores utilizados pelo Dashboard de Métricas.
+
+**Trade-off:** sem o Observer, o serviço precisaria conhecer e chamar diretamente cada componente interessado. Com o padrão, novos observadores podem ser adicionados apenas registrando-os no `Main`, mantendo baixo acoplamento. O custo é que o fluxo de execução fica menos explícito.
+
+---
 
 ### 4.3 Factory Method — criação das notificações
 
-**Problema:** a notificação da chamada pode ser feita por console ou por e-mail, e queríamos poder adicionar novos canais no futuro sem mudar o código que usa a notificação.
+**Problema:** a aplicação pode notificar o cliente por diferentes canais (console ou e-mail), e novos canais poderão ser adicionados futuramente.
 
-**Solução:** a classe abstrata `CriadorNotificacao` define o método `criarNotificacao()` (o *factory method*). Cada subclasse decide qual notificação concreta criar. O método `notificarChamada()` usa o produto sem saber qual é o tipo exato.
+**Solução:** foi utilizado o padrão **Factory Method**. A classe abstrata `CriadorNotificacao` define o método `criarNotificacao()`, enquanto cada subclasse decide qual implementação concreta será utilizada.
 
-Criador abstrato (`patterns/factory/CriadorNotificacao.java`):
+Criador abstrato:
 
 ```java
 public abstract class CriadorNotificacao {
 
-    // Este e o factory method que as subclasses devem implementar.
     protected abstract Notificacao criarNotificacao();
 
     public void notificarChamada(Senha senha) {
@@ -232,7 +315,7 @@ public abstract class CriadorNotificacao {
 }
 ```
 
-Subclasse concreta (`patterns/factory/CriadorNotificacaoEmail.java`):
+Implementação para e-mail:
 
 ```java
 public class CriadorNotificacaoEmail extends CriadorNotificacao {
@@ -244,47 +327,64 @@ public class CriadorNotificacaoEmail extends CriadorNotificacao {
 }
 ```
 
-**Trade-off assumido:** para um sistema pequeno, poderíamos simplesmente dar `new NotificacaoEmail()` onde precisássemos. Usamos o Factory Method para separar a criação do uso: adicionar um canal novo (SMS, por exemplo) é criar uma subclasse, sem alterar o serviço. O custo é ter mais classes envolvidas.
+**Trade-off:** seria possível instanciar diretamente cada notificação com `new`. Entretanto, o Factory Method desacopla a criação do objeto de sua utilização, facilitando a inclusão de novos canais de comunicação. O custo é um pequeno aumento na quantidade de classes.
 
 ---
 
 ## 5. Princípios de projeto respeitados
 
-- **Alta coesão:** cada classe faz uma coisa. `Senha` cuida do seu estado, `SenhaService` cuida dos casos de uso, `ApiHandler` só traduz HTTP em chamadas de método.
-- **Baixo acoplamento:** o serviço fala com o armazenamento pela interface `SenhaRepository`, não com a implementação concreta. Assim, trocar a forma de guardar os dados não afeta o serviço.
-- **Divisão de responsabilidades:** as regras do negócio ficam no domínio e no serviço, nunca na camada web. A camada web não decide nada de negócio.
-- **Facilidade de estender:** os três padrões permitem adicionar políticas, observadores e notificações sem alterar o código existente.
+Durante o desenvolvimento procurou-se seguir princípios clássicos de projeto de software:
+
+- **Alta coesão:** cada classe possui uma responsabilidade bem definida. A entidade `Senha` controla seu próprio estado, `SenhaService` implementa os casos de uso, enquanto a camada web apenas recebe e responde requisições HTTP.
+
+- **Baixo acoplamento:** o serviço depende da interface `SenhaRepository`, permitindo trocar a implementação de armazenamento sem alterar a lógica de negócio.
+
+- **Separação de responsabilidades:** toda regra de negócio permanece nas camadas de domínio e serviço. A interface HTML/JavaScript apenas consome a API REST.
+
+- **Extensibilidade:** os padrões Strategy, Observer e Factory Method permitem adicionar novas políticas de atendimento, novos observadores e novos canais de notificação sem modificar o código existente.
 
 ---
 
 ## 6. Testes
 
-O projeto tem testes automatizados escritos sem biblioteca externa, na classe `TesteSenhaService`. Eles verificam os pontos principais do sistema:
+O projeto possui testes automatizados implementados sem bibliotecas externas na classe `TesteSenhaService`.
 
-1. numeração sequencial das senhas;
-2. FIFO chama a senha mais antiga;
-3. Prioridade chama a senha prioritária;
-4. não é possível finalizar uma senha que só está aguardando;
-5. o painel conta corretamente cada situação.
+Os testes verificam:
 
-Saída da execução dos testes:
+1. geração sequencial das senhas;
+2. atendimento utilizando FIFO;
+3. atendimento utilizando Prioridade;
+4. impossibilidade de finalizar uma senha que ainda não foi chamada;
+5. cancelamento de senhas;
+6. reativação de senhas canceladas;
+7. contabilização correta dos indicadores do painel.
 
-```
+Exemplo de saída:
+
+```text
 [OK] Numeracao sequencial
 [OK] FIFO chama a mais antiga
 [OK] Prioridade chama a prioritaria
 [OK] Nao finaliza senha que so esta aguardando
+[OK] Cancelamento de senha
+[OK] Reativacao de senha cancelada
 [OK] Painel conta corretamente
 
-Resultado: 5 passou, 0 falhou.
+Resultado: 7 passou, 0 falhou.
 ```
 
 ---
 
 ## 7. Limitações e evoluções futuras
 
-- As senhas ficam apenas em memória, então os dados somem quando o programa é encerrado. Como usamos a interface `SenhaRepository`, seria possível criar uma implementação com banco de dados sem mexer no serviço.
-- O e-mail é apenas simulado (impresso no console). Um próximo passo seria integrar um envio real.
-- Não há login nem controle de acesso, que ficaram fora do escopo deste trabalho.
+Apesar de atender aos objetivos da disciplina, algumas limitações foram mantidas propositalmente.
 
-Essas escolhas foram conscientes, para manter o foco na arquitetura e nos padrões de projeto, que são o objetivo da disciplina.
+- As senhas permanecem armazenadas apenas em memória. Como existe a abstração `SenhaRepository`, uma implementação utilizando banco de dados pode ser adicionada futuramente sem alterar a camada de serviço.
+
+- A notificação por e-mail é simulada, sendo exibida apenas no console. Futuramente poderá ser integrada a um serviço real de envio.
+
+- O Dashboard de Métricas trabalha sobre os dados da execução corrente da aplicação. Persistindo as informações em banco de dados seria possível gerar relatórios históricos e indicadores por período.
+
+- O sistema não implementa autenticação nem controle de acesso, funcionalidades que ficaram fora do escopo deste trabalho.
+
+Essas decisões foram tomadas para manter o foco nos conceitos de Arquitetura de Software, nos padrões de projeto e na organização das responsabilidades entre as camadas da aplicação.
