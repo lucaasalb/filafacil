@@ -1,89 +1,216 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilaFacil - Gestao de Filas</title>
+    <title>FilaFácil - Operador</title>
+
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <header style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem;">
+
+<header>
+
+    <div class="logo-area">
+
         <div>
-            <h1>FilaFacil</h1>
-            <p>Sistema de gestao de filas de atendimento</p>
+            <h1>💺 FilaFácil</h1>
+            <p>Painel do Operador</p>
         </div>
-        <div style="display: flex; gap: 0.8rem;">
-            <a href="cliente.html" target="_blank" style="background: #38bdf8; color: #0f172a; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-                🖥️ Visão do Cliente (TV)
-            </a>
-            <a href="metricas.html" target="_blank" style="background: #a855f7; color: #ffffff; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-                📊 Painel de Métricas
-            </a>
-        </div>
-    </header>
 
-    <main>
-        <!-- Painel com os numeros -->
-        <section class="painel">
-            <h2>Painel</h2>
-            <div class="cartoes">
-                <div class="cartao"><span id="total">0</span><small>Total</small></div>
-                <div class="cartao"><span id="aguardando">0</span><small>Aguardando</small></div>
-                <div class="cartao"><span id="chamadas">0</span><small>Chamadas</small></div>
-                <div class="cartao"><span id="finalizadas">0</span><small>Finalizadas</small></div>
-                <div class="cartao"><span id="canceladas">0</span><small>Canceladas</small></div>
+    </div>
+
+    <div class="menu-superior">
+
+        <a href="cliente.html" target="_blank" class="btn-tv">
+            🖥️ Visão do Cliente
+        </a>
+
+        <a href="metricas.html" target="_blank" class="btn-metricas">
+            📊 Painel de Métricas
+        </a>
+
+    </div>
+
+</header>
+
+<main>
+
+    <section class="painel">
+
+        <h2>Resumo Geral</h2>
+
+        <div class="cartoes">
+
+            <div class="cartao">
+
+                <div class="icone">🎟️</div>
+
+                <span id="total">0</span>
+
+                <small>Total</small>
+
             </div>
-        </section>
 
-        <!-- Formulario de nova senha -->
-        <section class="formulario">
-            <h2>Nova senha</h2>
-            <input type="text" id="nomeCliente" placeholder="Nome do cliente">
+            <div class="cartao">
+
+                <div class="icone">⏳</div>
+
+                <span id="aguardando">0</span>
+
+                <small>Aguardando</small>
+
+            </div>
+
+            <div class="cartao">
+
+                <div class="icone">📢</div>
+
+                <span id="chamadas">0</span>
+
+                <small>Chamadas</small>
+
+            </div>
+
+            <div class="cartao">
+
+                <div class="icone">✅</div>
+
+                <span id="finalizadas">0</span>
+
+                <small>Finalizadas</small>
+
+            </div>
+
+            <div class="cartao">
+
+                <div class="icone">❌</div>
+
+                <span id="canceladas">0</span>
+
+                <small>Canceladas</small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section>
+
+        <h2>🎫 Nova Senha</h2>
+
+        <div class="form-grid">
+
+            <input
+                    id="nomeCliente"
+                    type="text"
+                    placeholder="Nome do cliente">
+
             <select id="tipoServico">
+
                 <option value="GERAL">Geral</option>
+
                 <option value="FINANCEIRO">Financeiro</option>
-                <option value="TECNICO">Tecnico</option>
+
+                <option value="TECNICO">Técnico</option>
+
             </select>
+
             <select id="prioridade">
+
                 <option value="NORMAL">Normal</option>
-                <option value="PRIORITARIA">Prioritaria</option>
-            </select>
-            <button onclick="criarSenha()">Gerar senha</button>
-        </section>
 
-        <!-- Chamar proxima senha -->
-        <section class="chamada">
-            <h2>Chamar proxima</h2>
+                <option value="PRIORITARIA">Prioritária</option>
+
+            </select>
+
+            <button onclick="criarSenha()">
+                Gerar Senha
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>📢 Chamar Próxima</h2>
+
+        <div class="form-grid">
+
             <select id="politica">
+
                 <option value="FIFO">Ordem de chegada (FIFO)</option>
+
                 <option value="PRIORIDADE">Prioridade primeiro</option>
+
             </select>
+
             <select id="canal">
+
                 <option value="CONSOLE">Notificar por console</option>
+
                 <option value="EMAIL">Notificar por email</option>
+
             </select>
-            <button onclick="chamarProxima()">Chamar proxima senha</button>
-        </section>
 
-        <!-- Lista de senhas -->
-        <section class="lista">
-            <h2>Senhas</h2>
+            <button onclick="chamarProxima()">
+                Chamar Próxima Senha
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>📋 Senhas</h2>
+
+        <div class="table-container">
+
             <table>
-                <thead>
-                    <tr>
-                        <th>Numero</th>
-                        <th>Cliente</th>
-                        <th>Servico</th>
-                        <th>Prioridade</th>
-                        <th>Status</th>
-                        <th>Acoes</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTabela"></tbody>
-            </table>
-        </section>
-    </main>
 
-    <script src="app.js"></script>
+                <thead>
+
+                <tr>
+
+                    <th>Número</th>
+
+                    <th>Cliente</th>
+
+                    <th>Serviço</th>
+
+                    <th>Prioridade</th>
+
+                    <th>Status</th>
+
+                    <th>Ações</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="corpoTabela">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="app.js"></script>
+
 </body>
 </html>

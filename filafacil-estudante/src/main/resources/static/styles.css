@@ -1,124 +1,442 @@
-/* Estilos simples para a interface do FilaFacil */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+body{
+
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1b2240 0%,
+            #232b45 35%,
+            #1f2440 100%
+        );
+
+    color:#ffffff;
+
+    min-height:100vh;
+
 }
 
-header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px;
-    text-align: center;
+/* ===========================
+   HEADER
+=========================== */
+
+header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:25px 45px;
+
+    background:#171d34;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
 }
 
-header p {
-    margin-top: 5px;
-    font-size: 14px;
-    color: #bdc3c7;
+.logo-area h1{
+
+    font-size:42px;
+
+    font-weight:800;
+
+    color:#4dc8ff;
+
 }
 
-main {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 0 15px;
+.logo-area p{
+
+    margin-top:5px;
+
+    color:#9ca8c4;
+
+    font-size:16px;
+
 }
 
-section {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.menu-superior{
+
+    display:flex;
+
+    gap:15px;
+
 }
 
-h2 {
-    margin-bottom: 15px;
-    font-size: 18px;
-    color: #2c3e50;
+.menu-superior a{
+
+    text-decoration:none;
+
+    color:white;
+
+    padding:12px 22px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:.25s;
+
 }
 
-/* Cartoes do painel */
-.cartoes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+.btn-tv{
+
+    background:#2aa8ff;
+
 }
 
-.cartao {
-    flex: 1;
-    min-width: 120px;
-    background-color: #ecf0f1;
-    border-radius: 6px;
-    padding: 15px;
-    text-align: center;
+.btn-metricas{
+
+    background:#9d4edd;
+
 }
 
-.cartao span {
-    display: block;
-    font-size: 28px;
-    font-weight: bold;
-    color: #2c3e50;
+.menu-superior a:hover{
+
+    transform:translateY(-2px);
+
+    opacity:.9;
+
 }
 
-.cartao small {
-    color: #7f8c8d;
+/* ===========================
+   MAIN
+=========================== */
+
+main{
+
+    width:95%;
+
+    max-width:1400px;
+
+    margin:35px auto;
+
 }
 
-/* Formularios */
-input, select, button {
-    padding: 10px;
-    margin: 5px 5px 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+/* ===========================
+   SEÇÕES
+=========================== */
+
+section{
+
+    background:#232b45;
+
+    border-radius:22px;
+
+    padding:28px;
+
+    margin-bottom:28px;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    box-shadow:
+
+        0 12px 30px rgba(0,0,0,.35);
+
 }
 
-button {
-    background-color: #2980b9;
-    color: white;
-    border: none;
-    cursor: pointer;
+section h2{
+
+    margin-bottom:25px;
+
+    font-size:26px;
+
+    color:#ffffff;
+
 }
 
-button:hover {
-    background-color: #2471a3;
+/* ===========================
+   CARDS
+=========================== */
+
+.cartoes{
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:18px;
+
 }
 
-/* Tabela */
-table {
-    width: 100%;
-    border-collapse: collapse;
+.cartao{
+
+    background:#1b223b;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    text-align:center;
+
+    transition:.25s;
+
 }
 
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+.cartao:hover{
+
+    transform:translateY(-4px);
+
 }
 
-th {
-    background-color: #f8f9fa;
-    font-size: 14px;
+.icone{
+
+    font-size:30px;
+
+    margin-bottom:10px;
+
 }
 
-.btn-acao {
-    padding: 5px 10px;
-    font-size: 12px;
-    margin: 2px;
+.cartao span{
+
+    display:block;
+
+    font-size:38px;
+
+    font-weight:800;
+
+    color:#43c5ff;
+
 }
 
-.btn-finalizar {
-    background-color: #27ae60;
+.cartao small{
+
+    color:#98a6c4;
+
+    font-size:15px;
+
 }
 
-.btn-cancelar {
-    background-color: #c0392b;
+/* ===========================
+   FORMULÁRIOS
+=========================== */
+
+.form-grid{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+
+}
+
+input{
+
+    flex:2;
+
+    min-width:250px;
+
+}
+
+select{
+
+    flex:1;
+
+    min-width:180px;
+
+}
+
+button{
+
+    padding:14px 24px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:white;
+
+    background:
+
+            linear-gradient(
+                    135deg,
+                    #2d8cff,
+                    #46b8ff
+            );
+
+    transition:.25s;
+
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+
+}
+
+input,
+select{
+
+    background:#1b223b;
+
+    color:white;
+
+    border:1px solid #33415f;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    font-size:15px;
+
+}
+
+input::placeholder{
+
+    color:#8b95af;
+
+}
+
+/* ===========================
+   TABELA
+=========================== */
+
+.table-container{
+
+    overflow:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+thead{
+
+    background:#1b223b;
+
+}
+
+th{
+
+    color:#4dc8ff;
+
+    text-align:left;
+
+    padding:16px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+td{
+
+    padding:18px 16px;
+
+    border-top:1px solid rgba(255,255,255,.05);
+
+}
+
+tbody tr{
+
+    transition:.25s;
+
+}
+
+tbody tr:hover{
+
+    background:#2a3354;
+
+}
+
+/* ===========================
+   BOTÕES DA TABELA
+=========================== */
+
+.btn-acao{
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:8px 14px;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin-right:6px;
+
+}
+
+.btn-finalizar{
+
+    background:#2ecc71;
+
+}
+
+.btn-cancelar{
+
+    background:#e74c3c;
+
+}
+
+.btn-reativar{
+
+    background:#f39c12;
+
+}
+
+/* ===========================
+   RESPONSIVO
+=========================== */
+
+@media(max-width:1100px){
+
+    .cartoes{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:800px){
+
+    header{
+
+        flex-direction:column;
+
+        gap:20px;
+
+        align-items:flex-start;
+
+    }
+
+    .form-grid{
+
+        flex-direction:column;
+
+    }
+
+    .cartoes{
+
+        grid-template-columns:1fr;
+
+    }
+
 }
